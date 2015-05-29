@@ -125,7 +125,8 @@ class Api::V1::MainController < ApplicationController
       @user_like_dislike = UserLikeDislike.new(user_like_dislike_params)
     else
       @user_like_dislike.likeDislike = params[:likeDislike]
-      @user_like_dislike.rejectReasons = params[:rejectReasons]
+      #@user_like_dislike.rejectReasons = params[:rejectReasons]
+      @user_like_dislike.update(user_like_dislike_params)
     end
     if @user_like_dislike.save
       render json: @user_like_dislike
