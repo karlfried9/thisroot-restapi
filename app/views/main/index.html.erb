@@ -1,0 +1,148 @@
+<div>
+  <a href="#" onclick="callAPI()">Get Access Token</a>
+  <br>
+  <a href="#" onclick="service1()">Service1 - Create or Update User App</a>
+  <br>
+  <a href="#" onclick="service2()">Service2 - Search Caret Properties</a>
+  <br>
+  <a href="#" onclick="service3()">Service3 - Like/Dislike Properties</a>
+  <br>
+  <a href="#" onclick="service4()">Service4 - Clear Like/Dislike Properties</a>
+  <br>
+  <a href="#" onclick="service5()">Service5 - Get User Liked Properties</a>
+  <br>
+</div>
+<script type="text/javascript">
+  var access_token = '';
+  function callAPI() {
+      $.ajax({
+          type: "POST",
+          //url:"<%= oauth_token_path %>",
+          url:"http://api.thisroof.com/oauth/token",
+//          dataType: "json",
+          data: {'grant_type': 'password',
+                 'username': 'ana@cerveo.com',
+                 'password': 'sdaf'},
+          success: function (response) {
+              console.log(response);
+              access_token = response.access_token;
+          }
+      })
+  }
+
+  function service1() {
+      $.ajax({
+          type: "POST",
+          url:"<%= user_app_create_path %>",
+          dataType: "json",
+          data: {//'access_token': access_token,
+                'api_key': '5df6feba-4b48-4cb0-b3b4-c1e778d0c6ce',
+                'mobileNum': '3055823212',
+                'firstName': 'Karl',
+                'lastName' : 'Friedrich',
+                'latitude' : '23.42',
+                'longitude' : '32.42',
+                'email' : 'karl@gmail.com',
+                'altitude' : "asdf",
+                'address' : "asdf",
+                'city' : "asdfasdf",
+                'state' : "ST",
+                'zipcode' : "132",
+                'country' : "US",
+                'value' : "asdfasdfsad",
+                'bedrooms' : "asdfasdf",
+                'bathsFull' : "sadfsafdasdf",
+                'squareFootageStructure' : "asdfasdf",
+                'lotSquareFootage' : "SADFasfdsadf",
+                'maxBudget' : "800",
+                'minBeds' : "asdfsadfsadf",
+                'minBaths' : "ASdfsadfas",
+                'startZip' : "asdfasdf",
+                'searchType' : "asdfasdfsadf",
+                'searchDist' : "asdfasdfsa",
+                'metricUS' : "1",
+                'propTypes' : "asdfsadfsadf",
+                'lastLogin' : "asdfsadfsda",
+                'loginCount' : "asdfsadfsda",
+                'registrationDate' : "2015/4/2"},
+          success: function (response) {
+              console.log(response);
+          }
+      })
+  }
+
+  function service2() {
+      $.ajax({
+          type: "POST",
+          url:"<%= search_caret_properties_path %>",
+          dataType: "json",
+          data: {
+              //'access_token': access_token,
+              //'api_key': '5df6feba-4b48-4cb0-b3b4-c1e778d0c6ce',
+              'mobileNum': '3055823212',
+              'page': '1',
+              'mode': 'Auto'
+              //'propertyID' : '23.42',
+          },
+          success: function (response) {
+              console.log(response);
+          },
+          error: function (error) {
+              alert(error);
+              console.log(error);
+          }
+      })
+  }
+
+  function service3() {
+      $.ajax({
+          type: "POST",
+          url:"<%= like_property_path %>",
+          dataType: "json",
+          data: {
+              'access_token': access_token,
+              'userID': '11',
+              'mobileNum': '3055823212',
+              'propertyID' : '1',
+              'likeDislike': false,
+              'rejectReasons': 'Rejected'
+          },
+          success: function (response) {
+              console.log(response);
+          }
+      })
+  }
+
+  function service4() {
+      $.ajax({
+          type: "POST",
+          url:"<%= clear_user_like_path %>",
+          dataType: "json",
+          data: {
+              'access_token': access_token,
+              'mobileNum': '3055823212',
+              'userID': '11',
+              'propertyID' : '1'
+          },
+          success: function (response) {
+              console.log(response);
+          }
+      })
+  }
+
+  function service5() {
+      $.ajax({
+          type: "POST",
+          url:"<%= user_liked_properties_path %>",
+          dataType: "json",
+          data: {
+              'access_token': access_token,
+              'mobileNum': '3055823212'
+          },
+          success: function (response) {
+              console.log(response);
+          }
+      })
+  }
+
+</script>

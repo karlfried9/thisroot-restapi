@@ -1,0 +1,4 @@
+json.extract! @user_app, :mobileNum, :firstName, :lastName, :latitude, :longitude, :email, :altitude, :address, :city, :state,
+              :zipcode, :country, :value, :bedrooms, :bathsFull, :squareFootageStructure, :lotSquareFootage, :maxBudget,
+              :minBeds, :minBaths, :startZip, :searchType, :searchDist, :metricUS, :propTypes, :lastLogin, :loginCount,
+              :registrationDate
