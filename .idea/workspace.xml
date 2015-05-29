@@ -38,8 +38,8 @@
       <file leaf-file-name="main_controller.rb" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/controllers/api/v1/main_controller.rb">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.49758455">
-              <caret line="117" column="52" selection-start-line="117" selection-start-column="52" selection-end-line="117" selection-end-column="52" />
+            <state vertical-scroll-proportion="0.45169082">
+              <caret line="117" column="82" selection-start-line="117" selection-start-column="82" selection-end-line="117" selection-end-column="82" />
               <folding />
             </state>
           </provider>
@@ -919,8 +919,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/controllers/api/v1/main_controller.rb">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.49758455">
-          <caret line="117" column="52" selection-start-line="117" selection-start-column="52" selection-end-line="117" selection-end-column="52" />
+        <state vertical-scroll-proportion="0.45169082">
+          <caret line="117" column="82" selection-start-line="117" selection-start-column="82" selection-end-line="117" selection-end-column="82" />
           <folding />
         </state>
       </provider>
