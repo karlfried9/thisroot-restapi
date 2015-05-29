@@ -115,7 +115,7 @@ class Api::V1::MainController < ApplicationController
     @caret_properties = @caret_properties.where("SaleYN = 'Y'")
     @caret_properties = @caret_properties.where("Status IN ('Active','Pending Sale','Backup Offer')")
 
-    render json: {sql: @caret_properties.to_sql}#, data:@caret_properties.paginate(:page => page_number, :per_page => 10)}
+    render json: {sql: @caret_properties.to_sql, data:@caret_properties.paginate(:page => page_number, :per_page => 10)}
   end
 
   def like_property
