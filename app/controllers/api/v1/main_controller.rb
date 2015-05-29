@@ -114,8 +114,14 @@ class Api::V1::MainController < ApplicationController
 
     @caret_properties = @caret_properties.where("SaleYN = 'Y'")
     @caret_properties = @caret_properties.where("Status IN ('Active','Pending Sale','Backup Offer')")
+    @caret_properties = @caret_properties.order("Propertyid")
+    #@caret_properties = @caret_properties.paginate(:page => 2, :per_page => 2)
+    # Since there are some issue for will_paginate when we use having caluse so we implement it manually.
+    per_page = 10
+    @caret_properties = @caret_properties.limit(per_page)
+    @caret_properties = @caret_properties.offset(per_page*(page_number.to_i-1))
 
-    render json: {data: @caret_properties.paginate(:page => page_number, :per_page => 3)}
+    render json: @caret_properties
   end
 
   def like_property
