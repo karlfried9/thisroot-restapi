@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   root 'main#index'
   get 'api/v1/userapp/test' => 'api/v1/main#test_action', as: :user_app_test
   post 'api/v1/userapp/create' => 'api/v1/main#userapp', as: :user_app_create
-  post 'api/v1/caret_properties' => 'api/v1/main#search_caret_properties', as: :search_caret_properties
+  post 'api/v1/search' => 'api/v1/main#search_caret_properties', as: :search_caret_properties
   post 'api/v1/like_property' => 'api/v1/main#like_property', as: :like_property
   post 'api/v1/clear_like' => 'api/v1/main#clear_user_like', as: :clear_user_like
   post 'api/v1/liked_properties' => 'api/v1/main#user_liked_properties', as: :user_liked_properties
