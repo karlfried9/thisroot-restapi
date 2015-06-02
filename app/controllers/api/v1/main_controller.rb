@@ -13,6 +13,9 @@ class Api::V1::MainController < ApplicationController
     @user_app = Usersapp.find_by(mobileNum: mobile_number)
     if @user_app.nil?
       @user_app = Usersapp.new(user_app_params)
+      @user_app.registrationDate = DateTime.now.to_date
+      @user_app.lastLogin = DateTime.now.to_date
+      @user_app.loginCount = 0
       if @user_app.save
         render json: @user_app
       else
@@ -108,8 +111,8 @@ class Api::V1::MainController < ApplicationController
     end
 
     if @user_app.propTypes != ''
-      propTypes = @user_app.propTypes.split(",")
-      #@caret_properties = @caret_properties.where('PropertySubType IN(?)', propTypes)
+      prop_types = @user_app.propTypes.split(",")
+      @caret_properties = @caret_properties.where('PropertySubType IN(?)', prop_types)
     end
 
     @caret_properties = @caret_properties.where("SaleYN = 'Y'")
@@ -143,9 +146,19 @@ class Api::V1::MainController < ApplicationController
 
   def clear_user_like
     mobile_number = params[:mobileNum]
-    @user_like_dislike = UserLikeDislike.find_by(mobileNum: mobile_number, propertyID: params[:propertyID])
-    if @user_like_dislike.present?
-      @user_like_dislike.destroy
+    @user_like_dislikes = UserLikeDislike.where(mobileNum: mobile_number)
+
+    if params[:likeDislike].present?
+      like = params[:likeDislike] == 0 ? TRUE : FALSE
+      @user_like_dislikes = @user_like_dislikes.where(likeDislike: like)
+
+      property_ids = params[:propertyID].split(",")
+      if property_ids.count > 0
+        @user_like_dislikes = @user_like_dislikes.where(propertyID: property_ids)
+      end
+      @user_like_dislikes.each do |like_property|
+        like_property.destroy
+      end
     end
     render json: {status: "success", data: "success"}
   end
@@ -161,8 +174,7 @@ class Api::V1::MainController < ApplicationController
     def user_app_params
       params.permit(:mobileNum, :firstName, :lastName, :latitude, :longitude, :email, :altitude, :address, :city, :state,
                     :zipcode, :country, :value, :bedrooms, :bathsFull, :squareFootageStructure, :lotSquareFootage, :maxBudget,
-                    :minBeds, :minBaths, :startZip, :searchType, :searchDist, :metricUS, :propTypes, :lastLogin, :loginCount,
-                    :registrationDate)
+                    :minBeds, :minBaths, :startZip, :searchType, :searchDist, :metricUS, :propTypes)
     end
 
     def user_like_dislike_params
