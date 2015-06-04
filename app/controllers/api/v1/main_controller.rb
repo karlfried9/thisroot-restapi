@@ -13,8 +13,7 @@ class Api::V1::MainController < ApplicationController
     @user_app = Usersapp.find_by(mobileNum: mobile_number)
     if @user_app.nil?
       @user_app = Usersapp.new(user_app_params)
-      @user_app.registrationDate = DateTime.now.to_date
-      @user_app.lastLogin = DateTime.now.to_date
+      @user_app.registrationDate = DateTime.now
       @user_app.loginCount = 0
       if @user_app.save
         render json: @user_app
@@ -22,6 +21,8 @@ class Api::V1::MainController < ApplicationController
         render json: {status: "failure"}
       end
     else
+      @user_app.lastLogin = DateTime.now
+      @user_app.loginCount += 1
       if @user_app.update(user_app_params)
         render json: @user_app
       else
