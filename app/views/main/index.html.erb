@@ -11,6 +11,8 @@
   <br>
   <a href="#" onclick="service5()">Service5 - Get User Liked Properties</a>
   <br>
+  <a href="#" onclick="service6()">Service6 - Search Caret Photos</a>
+  <br>
 </div>
 <script type="text/javascript">
   var access_token = '';
@@ -142,6 +144,22 @@
               //'access_token': access_token,
               'api_key': '5df6feba-4b48-4cb0-b3b4-c1e778d0c6ce',
               'mobileNum': '3055823212'
+          },
+          success: function (response) {
+              console.log(response);
+          }
+      })
+  }
+
+  function service6() {
+      $.ajax({
+          type: "POST",
+          url:"<%= search_caret_photos_path %>",
+          dataType: "json",
+          data: {
+              //'access_token': access_token,
+              'api_key': '5df6feba-4b48-4cb0-b3b4-c1e778d0c6ce',
+              'matrixID': '6117494'
           },
           success: function (response) {
               console.log(response);

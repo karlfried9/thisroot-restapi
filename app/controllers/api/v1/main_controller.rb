@@ -119,6 +119,15 @@ class Api::V1::MainController < ApplicationController
     @caret_properties = @caret_properties.where("SaleYN = 'Y'")
     @caret_properties = @caret_properties.where("Status IN ('Active','Pending Sale','Backup Offer')")
     @caret_properties = @caret_properties.order("Propertyid")
+    @user_like_dislike = UserLikeDislike.where(mobileNum: mobile_number, likeDislike: 0).map {|i| i.propertyID }
+    if @user_like_dislike.present?
+      @caret_properties = @caret_properties.where("Propertyid NOT IN (?)", @user_like_dislike)
+    end
+
+    # city
+    @caret_properties = @caret_properties.where("City <> 'Foreign Country'")
+    @caret_properties = @caret_properties.where("primaryPhoto IS NOT NULL")
+
     #@caret_properties = @caret_properties.paginate(:page => 2, :per_page => 2)
     # Since there are some issue for will_paginate when we use having caluse so we implement it manually.
     per_page = 10
@@ -168,6 +177,15 @@ class Api::V1::MainController < ApplicationController
     mobile_number = params[:mobileNum]
     @caret_properties = CaretProperty.where(:Propertyid => UserLikeDislike.where(mobileNum: mobile_number, likeDislike: TRUE).select(:propertyId))
     render json: @caret_properties
+  end
+
+  def search_caret_photos
+    matrix_id = params[:matrixID]
+    if matrix_id.nil?
+      render json: {status: "error", data: "Error"}
+    end
+    @caret_photos = CaretPhoto.where(:matrix_id => matrix_id).select("url")
+    render json: @caret_photos
   end
 
   private
