@@ -127,6 +127,7 @@ class Api::V1::MainController < ApplicationController
 
     # city
     @caret_properties = @caret_properties.where("City <> 'Foreign Country'")
+    @caret_properties = @caret_properties.where("City NOT LIKE 'Outside Area%'")
     @caret_properties = @caret_properties.where("primaryPhoto IS NOT NULL")
 
     #@caret_properties = @caret_properties.paginate(:page => 2, :per_page => 2)
