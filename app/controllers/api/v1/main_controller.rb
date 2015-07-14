@@ -69,7 +69,7 @@ class Api::V1::MainController < ApplicationController
       req = JSON.parse(req)
       if req['results'].present?
         lat = req['results'][0]['geometry']['location']['lat']
-        lang = req['results'][0]['geometry']['location']['lat']
+        lang = req['results'][0]['geometry']['location']['lng']
         @user_app.latitude = lat
         @user_app.longitude = lang
         @user_app.save
@@ -117,7 +117,8 @@ class Api::V1::MainController < ApplicationController
     end
 
     @caret_properties = @caret_properties.where("SaleYN = 'Y'")
-    @caret_properties = @caret_properties.where("Status IN ('Active','Pending Sale','Backup Offer')")
+    #@caret_properties = @caret_properties.where("Status IN ('Active','Pending Sale','Backup Offer')")
+    @caret_properties = @caret_properties.where("Status IN ('Active')")
     @caret_properties = @caret_properties.order("Propertyid")
     @user_like_dislike = UserLikeDislike.where(mobileNum: mobile_number, likeDislike: 0).map {|i| i.propertyID }
     if @user_like_dislike.present?
