@@ -33,6 +33,7 @@ class Api::V1::MainController < ApplicationController
 
   def search_caret_properties
     mobile_number = params[:mobileNum]
+    query_count = params[:queryCount].nil? ? 10 : params[:queryCount].to_i
     @user_app = Usersapp.find_by(mobileNum: mobile_number)
     if @user_app.nil?
       render json: {status: "error", data: "Error"}
@@ -132,7 +133,7 @@ class Api::V1::MainController < ApplicationController
 
     #@caret_properties = @caret_properties.paginate(:page => 2, :per_page => 2)
     # Since there are some issue for will_paginate when we use having caluse so we implement it manually.
-    per_page = 10
+    per_page = query_count
     @caret_properties = @caret_properties.limit(per_page)
     @caret_properties = @caret_properties.offset(per_page*(page_number.to_i-1))
 
@@ -164,9 +165,11 @@ class Api::V1::MainController < ApplicationController
       like = params[:likeDislike] == 0 ? TRUE : FALSE
       @user_like_dislikes = @user_like_dislikes.where(likeDislike: like)
 
-      property_ids = params[:propertyID].split(",")
-      if property_ids.count > 0
-        @user_like_dislikes = @user_like_dislikes.where(propertyID: property_ids)
+      if params[:propertyID].present?
+        property_ids = params[:propertyID].split(",")
+        if property_ids.count > 0
+          @user_like_dislikes = @user_like_dislikes.where(propertyID: property_ids)
+        end
       end
       @user_like_dislikes.each do |like_property|
         like_property.destroy
