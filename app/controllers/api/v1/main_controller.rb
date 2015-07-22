@@ -180,7 +180,8 @@ class Api::V1::MainController < ApplicationController
 
   def user_liked_properties
     mobile_number = params[:mobileNum]
-    @caret_properties = CaretProperty.where(:Propertyid => UserLikeDislike.where(mobileNum: mobile_number, likeDislike: TRUE).select(:propertyId))
+    @user_like_dislike = UserLikeDislike.where(mobileNum: mobile_number, likeDislike: 1).map {|i| i.propertyID }
+    @caret_properties = CaretProperty.where("Propertyid IN (?)", @user_like_dislike)
     render json: @caret_properties
   end
 
