@@ -162,8 +162,8 @@ class Api::V1::MainController < ApplicationController
     @user_like_dislikes = UserLikeDislike.where(mobileNum: mobile_number)
 
     if params[:likeDislike].present?
-      like = params[:likeDislike] == 0 ? TRUE : FALSE
-      @user_like_dislikes = @user_like_dislikes.where(likeDislike: like)
+      #like = params[:likeDislike] == "0" ? TRUE : FALSE
+      @user_like_dislikes = @user_like_dislikes.where(likeDislike: params[:likeDislike])
 
       if params[:propertyID].present?
         property_ids = params[:propertyID].split(",")
