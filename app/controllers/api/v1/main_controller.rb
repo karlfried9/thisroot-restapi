@@ -74,14 +74,37 @@ class Api::V1::MainController < ApplicationController
         @user_app.latitude = lat
         @user_app.longitude = lang
         @user_app.save
-        @caret_properties = @caret_properties.select("(((acos(sin((" + @user_app.latitude.to_s + "*pi()/180)) *
-                                                                   sin((`Latitude`*pi()/180))+cos(("+ lat.to_s + "*pi()/180)) *
-                                                                   cos((`Latitude`*pi()/180)) * cos((("+ lang.to_s + "- `Longitude`)*
-                                                                                                        pi()/180))))*180/pi())*60*1.1515
-                                                      ) as distance" ).having('distance < ?', (@user_app.searchDist*dist_param).round(2).to_s)
+        if @user_app.searchType == "0"
+          @caret_properties = @caret_properties.select("(((acos(sin((" + @user_app.latitude.to_s + "*pi()/180)) *
+                                                                     sin((`Latitude`*pi()/180))+cos(("+ lat.to_s + "*pi()/180)) *
+                                                                     cos((`Latitude`*pi()/180)) * cos((("+ lang.to_s + "- `Longitude`)*
+                                                                                                          pi()/180))))*180/pi())*60*1.1515
+                                                        ) as distance" ).having('distance < ?', (@user_app.searchDist*dist_param).round(2).to_s)
+        else
+          # Search properties by commute time
+          # In this case @user_app.searchDist is just time(minutes)
+          uri = URI('http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons/execute')
+          input_location = "{features:[{geometry:{x:#{@user_app.longitude},y:#{@user_app.latitude},spatialReference:{wkid:4326}}}],spatialReference:{wkid:4326}}"
+          params = {
+              'Input_Location' => input_location,
+              'Drive_Times' => @user_app.searchDist,
+              'f' => 'pjson',
+          }
+          res = Net::HTTP.post_form(uri, params)
+          res = JSON.parse(res.body)
+          if res['results'].present?
+            polygon = res['results'][0]['value']['features'][0]['geometry']['rings'][0]
+            polygon_text = "POLYGON(("
+            polygon.each do |p|
+              polygon_text = polygon_text + p[1].to_s + "," + p[0].to_s + ","
+            end
+            polygon_text = polygon_text.chomp(',') + "))"
+            @caret_properties = @caret_properties.where("Contains( GeomFromText('#{polygon_text}'), GeomFromText('POINT(Latitude, Longitute)'))")
+          end
+        end
       end
       #get directions from two points
-      "https://maps.googleapis.com/maps/api/directions/json?origin=49.515828,3.224381&destination=50.590798,30.825941"
+      #"https://maps.googleapis.com/maps/api/directions/json?origin=49.515828,3.224381&destination=50.590798,30.825941"
     end
 
     if @user_app.startZip != 0 and @user_app.searchType == '' and @user_app.searchDist == 0
@@ -192,6 +215,50 @@ class Api::V1::MainController < ApplicationController
     end
     @caret_photos = CaretPhoto.where(:matrix_id => matrix_id).select("url")
     render json: @caret_photos
+  end
+
+  def get_polygon
+    mobile_number = params[:mobileNum]
+    query_count = params[:queryCount].nil? ? 10 : params[:queryCount].to_i
+    @user_app = Usersapp.find_by(mobileNum: mobile_number)
+    if @user_app.nil?
+      render json: {status: "error", data: "Error"}
+      return
+    end
+
+    if @user_app.startZip != '' and @user_app.searchType != '' and @user_app.searchDist != 0
+      uri = URI('http://maps.googleapis.com/maps/api/geocode/json?address=' + @user_app.startZip)
+      req = Net::HTTP.get(uri)
+      req = JSON.parse(req)
+      if req['results'].present?
+        lat = req['results'][0]['geometry']['location']['lat']
+        lang = req['results'][0]['geometry']['location']['lng']
+        @user_app.latitude = lat
+        @user_app.longitude = lang
+        @user_app.save
+        if @user_app.searchType == "1"
+          # Search properties by commute time
+          # In this case @user_app.searchDist is just time(minutes)
+          uri = URI('http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons/execute')
+          input_location = "{features:[{geometry:{x:#{@user_app.longitude},y:#{@user_app.latitude},spatialReference:{wkid:4326}}}],spatialReference:{wkid:4326}}"
+          params = {
+              'Input_Location' => input_location,
+              'Drive_Times' => @user_app.searchDist,
+              'f' => 'pjson',
+          }
+          res = Net::HTTP.post_form(uri, params)
+          res = JSON.parse(res.body)
+          if res['results'].present?
+            polygon = res['results'][0]['value']['features'][0]['geometry']['rings'][0]
+            render json: { polygon: polygon }
+            return
+          end
+        end
+      end
+      #get directions from two points
+      #"https://maps.googleapis.com/maps/api/directions/json?origin=49.515828,3.224381&destination=50.590798,30.825941"
+    end
+    render json: {status: "error", data: "Error"}
   end
 
   private

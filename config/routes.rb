@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   post 'api/v1/clear' => 'api/v1/main#clear_user_like', as: :clear_user_like
   post 'api/v1/getLikes' => 'api/v1/main#user_liked_properties', as: :user_liked_properties
   post 'api/v1/getPhotos' => 'api/v1/main#search_caret_photos', as: :search_caret_photos
+  post 'api/v1/getPolygon' => 'api/v1/main#get_polygon', as: :get_polygon
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
