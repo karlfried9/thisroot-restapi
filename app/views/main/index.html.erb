@@ -22,11 +22,13 @@
         $.ajax({
             type: "POST",
             //url:"<%= oauth_token_path %>",
-            url:"http://api.thisroof.com/oauth/token",
+            url: "http://api.thisroof.com/oauth/token",
 //          dataType: "json",
-            data: {'grant_type': 'password',
+            data: {
+                'grant_type': 'password',
                 'username': 'ana@cerveo.com',
-                'password': 'sdaf'},
+                'password': 'sdaf'
+            },
             success: function (response) {
                 console.log(response);
                 access_token = response.access_token;
@@ -37,7 +39,7 @@
     function service1() {
         $.ajax({
             type: "POST",
-            url:"<%= user_app_create_path %>",
+            url: "<%= user_app_create_path %>",
             dataType: "json",
             data: {//'access_token': access_token,
                 "api_key": "5df6feba-4b48-4cb0-b3b4-c1e778d0c6ce",
@@ -51,9 +53,9 @@
                 "address": "",
                 "city": "",
                 "state": "",
-                "zipcode": "02704",
+                "zipcode": "90305",
                 "country": "",
-                "value": "0",
+                "value": "42142313",
                 "bedrooms": "0",
                 "bathsFull": "0",
                 "squareFootageStructure": "0",
@@ -61,21 +63,21 @@
                 "maxBudget": "1234567",
                 "minBeds": "1",
                 "minBaths": "1",
-                "startZip": "94580",
+                "startZip": "90305",
                 "searchType": "1",
                 "searchDist": "30",
                 "metricUS": "1",
-                "propTypes": ""},
+                "propTypes": ""
+            },
             success: function (response) {
                 console.log(response);
             }
         })
     }
-
     function service2() {
         $.ajax({
             type: "POST",
-            url:"<%= search_caret_properties_path %>",
+            url: "<%= search_caret_properties_path %>",
             dataType: "json",
             data: {
                 //'access_token': access_token,
@@ -83,7 +85,7 @@
                 'mobileNum': '3055823212',
                 'queryCount': '5',
                 'page': '1',
-                'mode': 'Auto'
+                'mode': '1'
                 //'propertyID' : '23.42',
             },
             success: function (response) {
@@ -99,14 +101,14 @@
     function service3() {
         $.ajax({
             type: "POST",
-            url:"<%= like_property_path %>",
+            url: "<%= like_property_path %>",
             dataType: "json",
             data: {
                 //'access_token': access_token,
                 'api_key': '5df6feba-4b48-4cb0-b3b4-c1e778d0c6ce',
                 'userID': '11',
                 'mobileNum': '3055823212',
-                'propertyID' : '1',
+                'propertyID': '1',
                 'likeDislike': false,
                 'rejectReasons': 'Rejected'
             },
@@ -119,7 +121,7 @@
     function service4() {
         $.ajax({
             type: "POST",
-            url:"<%= clear_user_like_path %>",
+            url: "<%= clear_user_like_path %>",
             dataType: "json",
             data: {
                 //'access_token': access_token,
@@ -127,7 +129,7 @@
                 'mobileNum': '3055823212',
                 //'userID': '11',
                 //'propertyID' : '1',
-                'likeDislike' : '1'
+                'likeDislike': '1'
             },
             success: function (response) {
                 console.log(response);
@@ -138,7 +140,7 @@
     function service5() {
         $.ajax({
             type: "POST",
-            url:"<%= user_liked_properties_path %>",
+            url: "<%= user_liked_properties_path %>",
             dataType: "json",
             data: {
                 //'access_token': access_token,
@@ -154,7 +156,7 @@
     function service6() {
         $.ajax({
             type: "POST",
-            url:"<%= search_caret_photos_path %>",
+            url: "<%= search_caret_photos_path %>",
             dataType: "json",
             data: {
                 //'access_token': access_token,
@@ -170,7 +172,7 @@
     function service7() {
         $.ajax({
             type: "POST",
-            url:"<%= get_polygon_path %>",
+            url: "<%= get_polygon_path %>",
             dataType: "json",
             data: {
                 //'access_token': access_token,
