@@ -98,12 +98,12 @@ class Api::V1::MainController < ApplicationController
           # In this case @user_app.searchDist is just time(minutes)
           uri = URI('http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons/execute')
           input_location = "{features:[{geometry:{x:#{@user_app.longitude},y:#{@user_app.latitude},spatialReference:{wkid:4326}}}],spatialReference:{wkid:4326}}"
-          params = {
+          polygon_params = {
               'Input_Location' => input_location,
               'Drive_Times' => searchDist,
               'f' => 'pjson',
           }
-          res = Net::HTTP.post_form(uri, params)
+          res = Net::HTTP.post_form(uri, polygon_params)
           res = JSON.parse(res.body)
           if res['results'].present?
             polygon = res['results'][0]['value']['features'][0]['geometry']['rings'][0]
@@ -262,12 +262,12 @@ class Api::V1::MainController < ApplicationController
           # In this case @user_app.searchDist is just time(minutes)
           uri = URI('http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/Network/ESRI_DriveTime_US/GPServer/CreateDriveTimePolygons/execute')
           input_location = "{features:[{geometry:{x:#{@user_app.longitude},y:#{@user_app.latitude},spatialReference:{wkid:4326}}}],spatialReference:{wkid:4326}}"
-          params = {
+          polygon_params = {
               'Input_Location' => input_location,
               'Drive_Times' => @user_app.searchDist,
               'f' => 'pjson',
           }
-          res = Net::HTTP.post_form(uri, params)
+          res = Net::HTTP.post_form(uri, polygon_params)
           res = JSON.parse(res.body)
           if res['results'].present?
             polygon = res['results'][0]['value']['features'][0]['geometry']['rings'][0]
