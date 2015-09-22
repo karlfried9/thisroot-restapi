@@ -32,6 +32,7 @@ class Api::V1::MainController < ApplicationController
   end
 
   def search_caret_properties
+    params = request.params
     mobile_number = params[:mobileNum]
     query_count = params[:queryCount].nil? ? 10 : params[:queryCount].to_i
     @user_app = Usersapp.find_by(mobileNum: mobile_number)
@@ -99,7 +100,7 @@ class Api::V1::MainController < ApplicationController
           input_location = "{features:[{geometry:{x:#{@user_app.longitude},y:#{@user_app.latitude},spatialReference:{wkid:4326}}}],spatialReference:{wkid:4326}}"
           params = {
               'Input_Location' => input_location,
-              'Drive_Times' => @user_app.searchDist,
+              'Drive_Times' => searchDist,
               'f' => 'pjson',
           }
           res = Net::HTTP.post_form(uri, params)
@@ -119,23 +120,23 @@ class Api::V1::MainController < ApplicationController
       #"https://maps.googleapis.com/maps/api/directions/json?origin=49.515828,3.224381&destination=50.590798,30.825941"
     end
 
-    if startZip != 0 and @user_app.searchType == '' and searchDist == 0
+    if startZip != '' and @user_app.searchType == '' and searchDist == 0
       @caret_properties = @caret_properties.where('ZipCode = ?', startZip)
     end
 
-    if @user_app.bedrooms != 0 and params[:mode] = 1
+    if @user_app.bedrooms != 0 and params[:mode] == "1"
       @caret_properties = @caret_properties.where('Bedrooms >= ?', @user_app.bedrooms)
     end
 
-	if @user_app.minBeds != 0 and params[:mode] = 0
+	  if @user_app.minBeds != 0 and params[:mode] == "0"
       @caret_properties = @caret_properties.where('Bedrooms >= ?', @user_app.minBeds).select("Bedrooms - " + @user_app.minBeds.to_s + " as sub_bed")
     end
 
-    if @user_app.bathsFull != 0 and params[:mode] = 1
+    if @user_app.bathsFull != 0 and params[:mode] == "1"
       @caret_properties = @caret_properties.where('BathsFull >= ?', @user_app.bathsFull)
     end
     
-    if @user_app.minBaths != 0 and params[:mode] = 0
+    if @user_app.minBaths != 0 and params[:mode] == "0"
       @caret_properties = @caret_properties.where('BathsFull >= ?', @user_app.minBaths).select("BathsFull - " + @user_app.minBaths.to_s + " as sub_bath")
     end
 
@@ -155,7 +156,7 @@ class Api::V1::MainController < ApplicationController
     #  @caret_properties = @caret_properties.where('BathsFull >= ?', @user_app.minBaths).select("BathsFull - " + @user_app.minBaths.to_s + " as sub_bath")
     #end
 
-    if @user_app.propTypes != '' and params[:mode] = 0
+    if @user_app.propTypes != '' and params[:mode] == "0"
       prop_types = @user_app.propTypes.split(",")
       @caret_properties = @caret_properties.where('PropertySubType IN(?)', prop_types)
     end
